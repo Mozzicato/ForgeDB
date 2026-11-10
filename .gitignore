@@ -1,1 +1,13 @@
 .vscode/
+
+# build output
+build/
+build-*/
+third_party_cache/
+
+# private interview prep and personal files
+prep/
+*.pdf
+
+# scratch data written by tests/benchmarks
+*.fdb
