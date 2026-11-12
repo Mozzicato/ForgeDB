@@ -1,0 +1,12 @@
+config,runs,ops_per_run,median_ops_per_sec,min_ops_per_sec,max_ops_per_sec,records_examined_per_op,bytes_examined_per_op
+batch_put/16/nosync,5,200000,286704,282469,303284,0,0
+batch_put/16/sync,5,32000,4176.79,3400.21,4864.83,0,0
+batch_put/256/nosync,5,200000,380476,278385,405892,0,0
+batch_put/256/sync,5,200000,50090.7,42536.6,63533.7,0,0
+batch_put/64/nosync,5,200000,375636,328101,425176,0,0
+batch_put/64/sync,5,64000,14905.6,13400.2,17201.8,0,0
+lookup/index,5,100000,11906.3,9761.37,58081.4,1,141
+lookup/scan_early_exit,5,20,3.59262,3.50573,5.38529,534339,7.5282e+07
+lookup/scan_full,5,20,2.04904,1.94245,2.13806,1.001e+06,1.41029e+08
+seq_put/nosync,5,200000,106465,100049,112003,0,0
+seq_put/sync,5,2000,289.095,230.598,301.667,0,0

@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-gcc
+            os: ubuntu-24.04
+            cxx: g++
+          - name: linux-clang
+            os: ubuntu-24.04
+            cxx: clang++
+          - name: windows-msvc
+            os: windows-latest
+            cxx: ""
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        shell: bash
+        run: |
+          if [ -n "${{ matrix.cxx }}" ]; then export CXX=${{ matrix.cxx }}; fi
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure --parallel 4
+
+  tsan:
+    name: thread-sanitizer
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure (clang + TSan)
+        run: CXX=clang++ cmake -S . -B build-tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DFORGEDB_TSAN=ON
+      - name: Build
+        run: cmake --build build-tsan --parallel
+      - name: Test under TSan
+        env:
+          # halt_on_error: any reported race fails the job.
+          TSAN_OPTIONS: halt_on_error=1 second_deadlock_stack=1
+        run: ctest --test-dir build-tsan --output-on-failure
