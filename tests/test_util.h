@@ -22,6 +22,14 @@ public:
         std::filesystem::remove_all(path_);
         std::filesystem::create_directories(path_);
     }
+    // A directory whose path depends only on `name`. Death tests need this:
+    // on Windows the child process re-runs the test from the start, so a
+    // randomised path would differ between parent and child.
+    explicit TempDir(const std::string& name) {
+        path_ = std::filesystem::temp_directory_path() / ("forgedb_fixed_" + name);
+        std::filesystem::remove_all(path_);
+        std::filesystem::create_directories(path_);
+    }
     ~TempDir() {
         std::error_code ec;
         std::filesystem::remove_all(path_, ec);

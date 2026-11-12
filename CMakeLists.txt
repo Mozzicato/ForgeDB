@@ -27,6 +27,8 @@ add_library(forgedb
   src/record.cpp
   src/replay.cpp
   src/log_file.cpp
+  src/db.cpp
+  src/fault.cpp
 )
 target_include_directories(forgedb PUBLIC src)
 
@@ -55,8 +57,17 @@ if(BUILD_TESTING)
     tests/record_test.cpp
     tests/replay_test.cpp
     tests/log_file_test.cpp
+    tests/db_test.cpp
+    tests/txn_test.cpp
+    tests/concurrency_test.cpp
+    tests/stress_test.cpp
+    tests/fault_injection_test.cpp
   )
   target_link_libraries(forgedb_tests PRIVATE forgedb GTest::gtest_main)
   include(GoogleTest)
   gtest_discover_tests(forgedb_tests DISCOVERY_TIMEOUT 60)
 endif()
+
+# ---- benchmarks ----------------------------------------------------------------
+add_executable(forgedb_bench benchmarks/forgedb_bench.cpp)
+target_link_libraries(forgedb_bench PRIVATE forgedb)
